@@ -18,6 +18,8 @@ I=imread('Data/0005_s.png'); % we have to be in the proper folder
 
 % ToDo: generate a matrix H which produces a similarity transformation
 
+H = [1 0 0; 0 1 0; 0 0 1]; % Example, we need to calculate the correct H
+
 I2 = apply_H(I, H);
 figure; imshow(I); figure; imshow(uint8(I2));
 
