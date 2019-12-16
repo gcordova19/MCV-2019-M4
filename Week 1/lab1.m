@@ -18,7 +18,14 @@ I=imread('Data/0005_s.png'); % we have to be in the proper folder
 
 % ToDo: generate a matrix H which produces a similarity transformation
 
-H = [1 0 0; 0 1 0; 0 0 1]; % Example, we need to calculate the correct H
+%Parameters: scale s, rotation angle theta, translation x and y
+s = 1;
+theta = 0.6;
+tx = 0;
+ty = 0;
+
+% H matrix
+H = [s*cos(theta) -s*sin(theta) tx; s*sin(theta) s*cos(theta) ty; 0 0 1]; 
 
 I2 = apply_H(I, H);
 figure; imshow(I); figure; imshow(uint8(I2));
@@ -27,6 +34,16 @@ figure; imshow(I); figure; imshow(uint8(I2));
 %% 1.2. Affinities
 
 % ToDo: generate a matrix H which produces an affine transformation
+%Parameters: scale sx and xy, rotation angle theta, shear c, translation x and y
+sx = 1;
+sy = 1;
+theta = 0.2;
+c = 2;
+tx = 0;
+ty = 0;
+
+% H matrix
+H = [sx*cos(theta) -tan(c)*sin(theta) tx; tan(c)*sin(theta) sy*cos(theta) ty; 0 0 1]; 
 
 I2 = apply_H(I, H);
 figure; imshow(I); figure; imshow(uint8(I2));
