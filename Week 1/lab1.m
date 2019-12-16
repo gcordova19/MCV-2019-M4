@@ -19,40 +19,55 @@ I=imread('Data/0005_s.png'); % we have to be in the proper folder
 % ToDo: generate a matrix H which produces a similarity transformation
 
 %Parameters: scale s, rotation angle theta, translation x and y
-s = 1;
-theta = 0.6;
-tx = 0;
+s = 2;
+theta = -0.6;
+tx = 100;
 ty = 0;
 
 % H matrix
-H = [s*cos(theta) -s*sin(theta) tx; s*sin(theta) s*cos(theta) ty; 0 0 1]; 
+H = [s*cos(theta) -s*sin(theta) tx; s*sin(theta) s*cos(theta) ty; 0 0 1]
 
 I2 = apply_H(I, H);
 figure; imshow(I); figure; imshow(uint8(I2));
+
+rotation_theta = [cos(theta) -sin(theta) 0; sin(theta) cos(theta) 0; 0 0 1];
+translation = [1 0 tx; 0 1 ty; 0 0 1];
+scale = [s 0 0; 0 s 0; 0 0 1];
+
+H = translation * scale * rotation_theta
 
 
 %% 1.2. Affinities
 
 % ToDo: generate a matrix H which produces an affine transformation
-%Parameters: scale sx and xy, rotation angle theta, shear c, translation x and y
+%Parameters: scale sx and xy, rotation angle theta, shear phi, translation x and y
 sx = 1;
 sy = 1;
-theta = 0.2;
-c = 2;
-tx = 0;
+theta = 0;
+phi = 2;
+tx = 100;
 ty = 0;
 
 % H matrix
-H = [sx*cos(theta) -tan(c)*sin(theta) tx; tan(c)*sin(theta) sy*cos(theta) ty; 0 0 1]; 
+H = [sx*cos(theta) -sy*tan(phi)*sin(theta) tx; sx*tan(phi)*sin(theta) sy*cos(theta) ty; 0 0 1];
 
 I2 = apply_H(I, H);
 figure; imshow(I); figure; imshow(uint8(I2));
 
 % ToDo: decompose the affinity in four transformations: two
-% rotations, a scale, and a translation
+% rotations, a scale, and a translation 
+rotation_theta = [cos(theta) -sin(theta) 0; sin(theta) cos(theta) 0; 0 0 1];
+rotation_phi = [1 tan(phi) 0; 0 tan(phi) 0; 0 0 1];
+rotation_minus_phi = [1 tan(-phi) 0; 0 tan(-phi) 0; 0 0 1];
+scale = [sx 0 0; 0 sy 0; 0 0 1];
+translation = [1 0 tx; 0 1 ty; 0 0 1];
 
 % ToDo: verify that the product of the four previous transformations
 % produces the same matrix H as above
+
+H =  translation * rotation_theta * rotation_minus_phi * scale * rotation_phi
+H = [sx*cos(theta) -sy*tan(phi)*sin(theta) tx; sx*tan(phi)*sin(theta) sy*cos(theta) ty; 0 0 1]
+
 
 % ToDo: verify that the proper sequence of the four previous
 % transformations over the image I produces the same image I2 as before
