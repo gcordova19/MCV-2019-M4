@@ -1,39 +1,28 @@
 function Ih = apply_H(I, H) 
-    
     % Apply H to corners of I to determine the horizontal and vertical 
     % limits of the output image
     [height, width, nChannels] = size(I);
+    corners = [0, 0, size(I,2), size(I,2);
+               0, size(I,1), 0, size(I,1)];
 
-    corner1 = H * [0; 0; 1];
-    corner1_y = floor(corner1(1) / corner1(3));
-    corner1_x = floor(corner1(2) / corner1(3));
+    dime = size(corners,2);
+    c3d = [corners;  ones(1,dime)];
+    h2d = H * c3d;
+    c2d = h2d(1:2,:)./ [h2d(3,:)' h2d(3,:)']';
     
-    corner2 = H * [height; 0; 1];
-    corner2_y = floor(corner2(1) / corner2(3));
-    corner2_x = floor(corner2(2) / corner2(3));
+    corners_x = c2d(1:2,:);
     
-    corner3 = H * [0; width; 1];
-    corner3_y = floor(corner3(1) / corner3(3));
-    corner3_x = floor(corner3(2) / corner3(3));
+    minx = floor(min(corners_x(1,:)));
+    maxx = ceil(max(corners_x(1,:)));
+    miny = floor(min(corners_x(2,:)));
+    maxy = ceil(max(corners_x(2,:)));
     
-    corner4 = H * [height; width; 1];
-    corner4_y = floor(corner4(1) / corner4(3));
-    corner4_x = floor(corner4(2) / corner4(3));
-    
-    corner_y = [corner1_y, corner2_y, corner3_y, corner4_y]
-    corner_x = [corner1_x, corner2_x, corner3_x, corner4_x]
-    
-    ymin = min(corner_y);
-    ymax = max(corner_y);
-    xmin = min(corner_y);
-    xmax = max(corner_x);
-    
-    n_x_points = xmax - xmin;
-    n_y_points = ymax - ymin;  
-    
+    n_x_points = maxx - minx;
+    n_y_points = maxy - miny;  
+ 
     % Generate a regular grid of (x,y) coordinates containing the output
     % image
-    [x,y] = meshgrid(linspace(xmin,xmax,n_x_points), linspace(ymin,ymax,n_y_points));
+    [x,y] = meshgrid(minx:maxx-1,miny:maxy-1);
    
     % Allocate an array of zeros with the same dimensions as your grid in
     % which you will store the output intensities
@@ -64,7 +53,6 @@ function Ih = apply_H(I, H)
     Ih = reshape(Ih, [n_y_points, n_x_points, nChannels]);
 
     % Set intensities from outside boundaries to zero
-    Ih(isnan(Ih)) = 0;
+    %Ih(isnan(Ih)) = 0;
     
 end
-
